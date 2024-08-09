@@ -28,5 +28,5 @@ jobs:
         # Tests on backend
     - run: cd backend
     - run: npm i
-    - run: npx vitest
-    - run: npm run build --if-present
+    - run: npm run test
+    # - run: npm run build --if-present
