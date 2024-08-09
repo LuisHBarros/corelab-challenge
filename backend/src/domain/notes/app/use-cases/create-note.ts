@@ -10,7 +10,7 @@ interface CreateNoteDTO {
 	description: string;
 	fav: boolean;
 	color: Color;
-    file?: string;
+	file?: string;
 	user_id: string;
 }
 
