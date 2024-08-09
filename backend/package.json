@@ -1,0 +1,41 @@
+{
+	"name": "corelab-challenge-backend",
+	"version": "1.0.0",
+	"description": "CoreLab Challenge Backend",
+	"main": "index.ts",
+	"scripts": {
+		"start": "none build/server.js",
+		"build": "tsup src --out-dir build",
+		"dev": "tsx watch src/server.ts",
+		"lint": "eslint . --ext .ts",
+		"format": "prettier --write .",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "Luishrbr@gmail.com",
+	"license": "ISC",
+	"type": "module",
+	"dependencies": {
+		"drizzle-kit": "^0.23.2",
+		"drizzle-orm": "^0.32.2",
+		"fastify": "^4.28.1",
+		"tsup": "^8.2.4",
+		"tsx": "^4.16.5",
+		"vitest": "^2.0.5",
+		"zod": "^3.23.8"
+	},
+	"devDependencies": {
+		"@faker-js/faker": "^8.4.1",
+		"@tsconfig/node20": "^20.1.4",
+		"@types/node": "^22.1.0",
+		"@typescript-eslint/eslint-plugin": "^8.0.1",
+		"@typescript-eslint/parser": "^8.0.1",
+		"eslint": "^9.8.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-prettier": "^5.2.1",
+		"globals": "^15.9.0",
+		"prettier": "^3.3.3",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.5.4"
+	}
+}
