@@ -6,7 +6,7 @@ export interface NoteProps {
 	description: string;
 	fav: boolean;
 	color: Color;
-	file: string;
+	file?: string;
 	user_id: string;
 }
 
@@ -27,7 +27,7 @@ export class Note extends Entity<NoteProps> {
 		return this.props.user_id;
 	}
 	get file() {
-		return this.props.file;
+		return this.props.file || "";
 	}
 	set fav(fav: boolean) {
 		this.props.fav = fav;
