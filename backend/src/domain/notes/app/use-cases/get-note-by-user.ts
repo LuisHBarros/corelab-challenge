@@ -3,7 +3,7 @@ import { ResourceNotFoundError } from "@/core/errors/errors/not_found";
 import { UseCaseError } from "@/core/errors/use-case-error";
 import { Note } from "../../entities/note";
 import { NoteRepository } from "../repository/note-repository";
-import { sortNotes } from "../repository/utils/sort-notes";
+import { sortNotes } from "../utils/sort-notes";
 
 interface GetNoteByUserDTO {
 	user_id: string;
