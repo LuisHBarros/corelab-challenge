@@ -9,7 +9,7 @@
 		"dev": "tsx watch src/server.ts",
 		"lint": "eslint . --ext .ts",
 		"format": "prettier --write .",
-        "test": "vitest run --reporter=verbose"
+		"test": "vitest run --reporter=verbose"
 	},
 	"keywords": [],
 	"author": "Luishrbr@gmail.com",
@@ -19,6 +19,7 @@
 		"drizzle-kit": "^0.23.2",
 		"drizzle-orm": "^0.32.2",
 		"fastify": "^4.28.1",
+		"postgres": "^3.4.4",
 		"tsup": "^8.2.4",
 		"tsx": "^4.16.5",
 		"vitest": "^2.0.5",
