@@ -29,5 +29,5 @@ jobs:
       working-directory: backend
 
     - name: Run use-cases tests
-      run: npm run test:use-cases
+      run: npx vitest run src/**/**/use-cases 
       working-directory: backend
