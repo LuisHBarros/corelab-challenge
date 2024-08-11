@@ -32,6 +32,10 @@ jobs:
         sudo chmod +x /usr/local/bin/docker-compose
         docker-compose --version
 
+    - name: Install dependencies including dotenv
+      run: npm install
+      working-directory: ./backend
+
     - name: Copy .env.example to .env
       run: cp backend/.env.example backend/.env
 
