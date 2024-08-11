@@ -5,11 +5,10 @@ export interface UserProps {
 }
 
 export class User extends Entity<UserProps> {
-	public get sessionId(): string {
+	public get session_id(): string {
 		return this.props.session_id;
 	}
-
-	public static create(props: UserProps): User {
-		return new User(props);
+	public static create(props: UserProps, id?: string): User {
+		return new User(props, id);
 	}
 }

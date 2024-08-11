@@ -21,7 +21,7 @@ describe("Get User", () => {
 	it("should return a user while passing the sessionId", async () => {
 		const user = UserFactory();
 		await userRepository.save(user);
-		const response = await sut.execute({ sessionId: user.sessionId });
+		const response = await sut.execute({ sessionId: user.session_id });
 		expect(response.isRight()).toBe(true);
 		expect(response.value).toBe(user);
 	});
@@ -31,3 +31,4 @@ describe("Get User", () => {
 		expect(response.value).toBeInstanceOf(ResourceNotFoundError);
 	});
 });
+
