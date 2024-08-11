@@ -21,9 +21,17 @@ export class FakeNoteRepository implements NoteRepository {
 		this.notes[index] = note;
 		return;
 	}
-	async remove(note: Note): Promise<void> {
-		const index = this.notes.findIndex((n) => n.id === note.id);
+	async remove(id: string): Promise<void> {
+		const index = this.notes.findIndex((n) => n.id === id);
 		this.notes.splice(index, 1);
 		return;
+	}
+	async findByUserIdAndTitle(
+		userId: string,
+		title: string
+	): Promise<Note | null> {
+		return this.notes.filter(
+			(note) => note.user_id === userId && note.title === title
+		)[0];
 	}
 }

@@ -11,7 +11,8 @@ export class FakeUserRepository implements UserRepository {
 	}
 	async findBySessionId(sessionId: string): Promise<User | null> {
 		return Promise.resolve(
-			this.users.find((user) => user.sessionId === sessionId) || null
+			this.users.find((user) => user.session_id === sessionId) || null
 		);
 	}
 }
+
