@@ -28,4 +28,4 @@ jobs:
         run: docker build -t my-app-image .
 
       - name: Run e2e tests in Docker container
-        run: docker run --rm my-app-image npm run test:e2e:docker
+        run: cd backend && docker run --rm my-app-image npm run test:e2e:docker
