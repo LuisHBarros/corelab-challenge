@@ -17,7 +17,7 @@ export class DeleteNote {
 		if (!note) {
 			return left(new ResourceNotFoundError("Note not found"));
 		}
-		await this.noteRepository.remove(note);
+		await this.noteRepository.remove(note.id);
 		return right(null);
 	}
 }

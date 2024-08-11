@@ -12,6 +12,6 @@ export class CreateUser {
 		const session_id = generateSessionId();
 		const user = User.create({ session_id });
 		await this.userRepository.save(user);
-		return right(session_id);
+		return right(user.session_id);
 	}
 }

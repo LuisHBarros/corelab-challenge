@@ -16,7 +16,7 @@ describe("Test update note use case", () => {
 		noteRepository.save(note);
 		const response = await sut.execute({ id: note.id, fav: true });
 		expect(response.isRight()).toBe(true);
-		expect(response.value).toBe(null);
+		expect(response.value).toBe(note);
 		const updatedNote = await noteRepository.findById(note.id);
 		expect(updatedNote?.fav).toBe(true);
 	});

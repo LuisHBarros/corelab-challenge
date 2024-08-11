@@ -6,7 +6,7 @@ export interface NoteProps {
 	description: string;
 	fav: boolean;
 	color: Color;
-	file?: string;
+	file: string | null;
 	user_id: string;
 }
 

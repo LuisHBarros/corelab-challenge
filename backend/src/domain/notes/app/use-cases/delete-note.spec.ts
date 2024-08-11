@@ -1,9 +1,9 @@
 import { FakeNoteRepository } from "@/test/fake-repositories/fake-note-repository";
 import { beforeEach, describe, expect, it } from "vitest";
 import { DeleteNote } from "./delete-note";
+
 import { NoteFactory } from "@/test/factory/note-factory";
 import { ResourceNotFoundError } from "@/core/errors/errors/not_found";
-
 describe("Test delete note use case", () => {
 	let noteRepository: FakeNoteRepository;
 	let sut: DeleteNote;
@@ -22,6 +22,6 @@ describe("Test delete note use case", () => {
 	it("should return a ResourceNotFoundError if given note id does not exist", async () => {
 		const response = await sut.execute({ id: "invalid_note_id" });
 		expect(response.isLeft()).toBe(true);
-		expect(response.value).toBeInstanceOf(ResourceNotFoundError);
+		expect(response.value).instanceOf(ResourceNotFoundError);
 	});
 });

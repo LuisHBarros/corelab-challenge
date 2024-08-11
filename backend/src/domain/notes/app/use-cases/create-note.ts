@@ -10,7 +10,7 @@ interface CreateNoteDTO {
 	description: string;
 	fav: boolean;
 	color: Color;
-	file?: string;
+	file: string | null;
 	user_id: string;
 }
 
@@ -26,7 +26,7 @@ export class CreateNote {
 		file,
 		user_id
 	}: CreateNoteDTO): CreateNoteResponse {
-		if (await this.noteRepository.findByTitle(title)) {
+		if (await this.noteRepository.findByUserIdAndTitle(user_id, title)) {
 			return left(new AlreadyExistsError("Note already exists"));
 		}
 		const note = Note.create({ title, description, fav, color, file, user_id });

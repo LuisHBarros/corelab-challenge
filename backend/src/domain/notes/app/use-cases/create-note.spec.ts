@@ -2,6 +2,7 @@ import { FakeNoteRepository } from "@/test/fake-repositories/fake-note-repositor
 import { beforeEach, describe, expect, it } from "vitest";
 import { CreateNote } from "./create-note";
 import { NoteFactory } from "@/test/factory/note-factory";
+import { Note } from "../../entities/note";
 
 describe("Test createNote use case", () => {
 	let noteRepository: FakeNoteRepository;
@@ -20,6 +21,8 @@ describe("Test createNote use case", () => {
 			user_id: "user_id"
 		});
 		expect(response.isRight()).toBe(true);
+
+		expect(response.value).toBeInstanceOf(Note);
 	});
 	it("should not create a note if already exists one with the same title", async () => {
 		const note = NoteFactory();
@@ -30,7 +33,7 @@ describe("Test createNote use case", () => {
 			fav: false,
 			color: 1,
 			file: "file",
-			user_id: "user_id"
+			user_id: note.user_id
 		});
 		expect(response.isLeft()).toBe(true);
 	});
