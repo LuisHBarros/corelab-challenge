@@ -1,16 +1,17 @@
-# This workflow will build the Docker image and run end-to-end tests using Docker
+# This workflow will build the Docker image from the backend directory and run end-to-end tests using Docker
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
 name: application - continuous integration
 
 on:
   push:
-    branches: ["master"]
+    branches: [ "master" ]
   pull_request:
-    branches: ["master"]
+    branches: [ "master" ]
 
 jobs:
   run-tests:
+
     runs-on: ubuntu-latest
 
     strategy:
@@ -19,13 +20,13 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
 
-      - name: Build Docker image
-        run: docker build -t my-app-image .
+    - name: Build Docker image
+      run: docker build -t my-app-image ./backend
 
-      - name: Run e2e tests in Docker container
-        run: cd backend && docker run --rm my-app-image npm run test:e2e:docker
+    - name: Run e2e tests in Docker container
+      run: docker run --rm my-app-image npm run test:e2e:docker
