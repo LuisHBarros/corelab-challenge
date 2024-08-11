@@ -1,4 +1,4 @@
-# This workflow will build the Docker image from the backend directory and run end-to-end tests using Docker
+# This workflow will use Docker Compose to run end-to-end tests
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
 name: application - continuous integration
@@ -28,5 +28,11 @@ jobs:
     - name: Build Docker image
       run: docker build -t my-app-image ./backend
 
-    - name: Run e2e tests in Docker container
-      run: docker run --rm my-app-image npm run test:e2e:docker
+    - name: Run e2e tests using Docker Compose
+      run: |
+        docker-compose -f docker-compose.test.yml up -d
+        sleep 5
+        docker-compose -f docker-compose.test.yml exec -T <service-name> npm run db:test:setup
+        docker-compose -f docker-compose.test.yml exec -T <service-name> npm run test:e2e
+        docker-compose -f docker-compose.test.yml down
+      # Replace <service-name> with the name of the service defined in your docker-compose.test.yml
