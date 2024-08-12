@@ -6,6 +6,6 @@ export default defineConfig({
 	schema: "./src/db/schemas.ts",
 	out: "./drizzle",
 	dbCredentials: {
-		url: env.DB_URL
+		url: env.DB_URL || "postgresql://docker:docker@localhost:5432/core_notes"
 	}
 });
