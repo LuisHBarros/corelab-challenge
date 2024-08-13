@@ -6,11 +6,29 @@ export default function Home() {
   return (
     <>
       <Header />
-      <body className="bg-gray-300 items-center flex flex-col justify-center">
+      <main className="bg-[#F0F2F5] items-center flex flex-col justify-center">
         <InputCard />
-        <Card fav={true} title="Titulo 1" color="1" key={1} />
-        <Card fav={true} title="Titulo 1" color="4" key={1} />
-      </body>
+        <ul className="flex flex-col gap-14 lg:flex-row lg:flex-wrap lg:mx-auto justify-center">
+          <li>
+            <Card
+              fav={true}
+              title="Titulo 1"
+              color="1"
+              key={1}
+              file="https://t3.ftcdn.net/jpg/06/48/79/10/360_F_648791013_cQK30SdyiLrVQ96Bqn2MOkz4JmvgttGr.jpg"
+            />
+          </li>
+          <li>
+            <Card fav={false} title="Titulo 2" color="4" key={2} />
+          </li>
+          <li>
+            <Card fav={true} title="Titulo 3" color="2" key={3} />
+          </li>
+          <li>
+            <Card fav={false} title="Titulo 4" color="3" key={4} />
+          </li>
+        </ul>
+      </main>
     </>
   );
 }
