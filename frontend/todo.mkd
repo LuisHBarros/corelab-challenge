@@ -1,0 +1,10 @@
+# TODOS
+
+Implementar forms
+[] Pesquisa
+[] Edicao titulo
+[] Edicao cor
+[] Upload arquivo
+
+[] verificar rotas
+[] implementar rotas
