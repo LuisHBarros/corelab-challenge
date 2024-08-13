@@ -84,7 +84,7 @@ export class NotesController {
 			user_id: req.params.user_id
 		});
 		if (response.isLeft()) {
-			return reply.status(404).send(response.value);
+			return reply.status(404).send(response.value.message);
 		}
 		return reply.status(200).send(response.value);
 	}

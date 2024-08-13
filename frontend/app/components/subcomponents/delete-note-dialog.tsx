@@ -1,14 +1,34 @@
+import { deleteNote } from "@/app/api/note/delete.note";
 import { Dialog, DialogTitle, DialogActions, Button } from "@mui/material";
+import axios from "axios";
+import { useState } from "react";
 
 interface DeleteNoteDialogProps {
   buttonDeleteOpen: boolean;
   onButtonDeleteClick: () => void;
+  id: string;
 }
 
 export function DeleteNoteDialog({
   buttonDeleteOpen,
   onButtonDeleteClick,
+  id,
 }: DeleteNoteDialogProps) {
+  const [loading, setLoading] = useState(false);
+
+  async function handleDeleteNote() {
+    try {
+      setLoading(true);
+      await deleteNote(id);
+      // Opcional: Fechar o diálogo ou atualizar o estado do pai
+      onButtonDeleteClick();
+    } catch (error) {
+      console.error("Erro ao excluir a nota:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <Dialog
       open={buttonDeleteOpen}
@@ -44,7 +64,7 @@ export function DeleteNoteDialog({
           Cancelar
         </Button>
         <Button
-          onClick={onButtonDeleteClick}
+          onClick={handleDeleteNote}
           sx={{
             backgroundColor: "#f44336", // Cor de fundo do botão "Excluir"
             color: "#fff", // Cor do texto do botão
@@ -53,8 +73,9 @@ export function DeleteNoteDialog({
               backgroundColor: "#d32f2f", // Cor de fundo ao passar o mouse
             },
           }}
+          disabled={loading} // Desabilitar o botão enquanto a requisição está em andamento
         >
-          Excluir
+          {loading ? "Excluindo..." : "Excluir"}
         </Button>
       </DialogActions>
     </Dialog>

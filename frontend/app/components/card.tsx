@@ -1,7 +1,7 @@
 "use client"; // Adicione esta linha
 import { Close, Edit, Star, StarBorder } from "@mui/icons-material";
 import { Box } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FileUploader } from "./subcomponents/file-uploader";
 import bucket from "@/app/assets/bucket.svg";
@@ -9,10 +9,11 @@ import { ColorMenu } from "./subcomponents/color-menu";
 import { DeleteNoteDialog } from "./subcomponents/delete-note-dialog";
 
 interface CardProps {
+  id: string;
   title: string;
   fav: boolean;
   file?: string;
-  color: string;
+  color: number;
 }
 
 const colors = [
@@ -30,7 +31,7 @@ const colors = [
   "#A99A7C",
 ];
 
-export function Card({ title, fav, file, color }: CardProps) {
+export function Card({ title, fav, file, color, id }: CardProps) {
   const [buttonColorOpen, setButtonColorOpen] = useState(false);
   const [buttonEditOpen, setButtonEditOpen] = useState(false);
   const [buttonDeleteOpen, setButtonDeleteOpen] = useState(false);
@@ -51,7 +52,7 @@ export function Card({ title, fav, file, color }: CardProps) {
     <div className="flex flex-col items-center">
       <div
         className="border border-[#D9D9D9] bg-white w-72 min-h-72 mt-5 rounded-2xl flex flex-col justify-between lg:w-[32rem]"
-        style={color ? { backgroundColor: colors[parseInt(color)] } : {}}
+        style={color ? { backgroundColor: colors[color] } : {}}
       >
         <section>
           <div
@@ -119,13 +120,14 @@ export function Card({ title, fav, file, color }: CardProps) {
       {buttonColorOpen && (
         <div className="px-1 py-1 bg-white rounded-lg shadow-lg z-10 flex flex-wrap w-56 mt-[-10px]">
           {colors.map((color, index) => (
-            <ColorMenu key={index} color={color} />
+            <ColorMenu colorIndex={index} color={color} key={index} />
           ))}
         </div>
       )}
       <DeleteNoteDialog
         buttonDeleteOpen={buttonDeleteOpen}
         onButtonDeleteClick={onButtonDeleteClick}
+        id={id}
       />
     </div>
   );
