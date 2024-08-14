@@ -1,15 +1,21 @@
 "use client";
-import { StarBorder } from "@mui/icons-material";
+import { Star, StarBorder } from "@mui/icons-material";
 import { useState } from "react";
 import { createNote } from "../api/note/create-note";
 import { useSession } from "../context/session-id-context";
+import { useNotes } from "../context/notes-context";
 
 export function InputCard() {
   const { userId } = useSession();
-  const [inputValue, setInputValue] = useState("");
+  const { setNotes, notes } = useNotes();
+
+  const [inputValue, setInputValue] = useState({ title: "", fav: false });
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
+    setInputValue({ ...inputValue, title: event.target.value });
   };
+  function handleStarClick() {
+    setInputValue({ ...inputValue, fav: !inputValue.fav });
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Evita o comportamento padrão do form
@@ -19,13 +25,13 @@ export function InputCard() {
         color: 1,
         description: "12312312",
         file: "",
-        fav: false,
-        title: inputValue,
+        fav: inputValue.fav,
+        title: inputValue.title,
         user_id: userId || "",
       });
-      console.log("Nota enviada com sucesso:", response.data);
+      setNotes([...notes, response]); // Adiciona a nova nota à lista de notas
       // Limpar o valor do input após o envio, se desejado
-      setInputValue("");
+      setInputValue({ title: "", fav: false });
     } catch (error) {
       console.error("Erro ao enviar a nota:", error);
     }
@@ -35,14 +41,29 @@ export function InputCard() {
       <div className="bg-white w-72 h-28 mt-5 rounded-3xl shadow-md flex flex-col border border-[#D9D9D9] lg:w-[32rem] lg:h-40 lg:rounded-none">
         <div className="flex flex-row items-center justify-between border-b border-gray-200 px-4">
           <h1 className="text-xl font-bold leading-10">Titulo</h1>
-          <button className="mt-[1px]" type="button">
+          <button
+            className="relative mt-[1px]" // Adicione "relative" aqui
+            type="button"
+            onClick={handleStarClick}
+          >
             <StarBorder sx={{ color: "#455a64", fontSize: 30 }} />
+            {inputValue.fav && (
+              <Star
+                sx={{
+                  color: "#ffa000",
+                  fontSize: 20,
+                  position: "absolute",
+                  top: "5px", // ajuste para centralizar verticalmente
+                  left: "5px", // ajuste para centralizar horizontalmente
+                }}
+              />
+            )}
           </button>
         </div>
         <input
           type="text"
           placeholder="Criar nota..."
-          value={inputValue}
+          value={inputValue.title}
           onChange={handleChange}
           className="mx-4 h-12 border-none bg-transparent shadow-none p-0 m-0 focus:outline-none"
         />

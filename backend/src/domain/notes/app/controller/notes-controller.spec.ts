@@ -27,7 +27,6 @@ describe("Tests end2end for user controller", () => {
 		);
 		const response = await request(app.server).post("/notes").send({
 			title: note.title,
-			description: note.description,
 			fav: note.fav,
 			color: note.color,
 			file: note.file,
@@ -66,8 +65,6 @@ describe("Tests end2end for user controller", () => {
 		await noteRepository.save(note);
 		const response = await request(app.server).put(`/notes/${note.id}`).send({
 			id: note.id,
-			title: "new title",
-			description: "Updated description",
 			fav: true,
 			color: 1,
 			file: null,
@@ -99,6 +96,20 @@ describe("Tests end2end for user controller", () => {
 			.post("/notes/file")
 			.attach("file", "test/fixtures/dog.jpg");
 		expect(response.status).toBe(200);
-		expect(response.body.message).toBeTypeOf("string");
+		expect(response.body.filename).toBeTypeOf("string");
+	});
+	it("should find a note by title", async () => {
+		const note = NoteFactory();
+		await userRepository.save(
+			User.create({ session_id: generateSessionId() }, note.user_id)
+		);
+		await noteRepository.save(note);
+		const response = await request(app.server).get(
+			`/notes?title=${note.title}&user_id=${note.user_id}`
+		);
+		console.log(response.body);
+
+		expect(response.status).toBe(200);
+		expect(response.body[0].props.title).toBe(note.title);
 	});
 });

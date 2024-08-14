@@ -7,6 +7,8 @@ export async function NoteRoutes(fastify: FastifyInstance) {
 	fastify.post("/notes", controller.create.bind(controller));
 
 	fastify.get("/notes/:id", controller.get.bind(controller));
+	// /notes?title={title}&userId={userId}
+	fastify.get("/notes", controller.getByTitle.bind(controller));
 
 	fastify.get("/notes/user/:user_id", controller.getByUser.bind(controller));
 

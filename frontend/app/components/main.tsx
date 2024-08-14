@@ -4,26 +4,11 @@ import { InputCard } from "./input-card";
 import { getNotesByUserId } from "../api/note/get-note-by-user-id";
 import { useSession } from "../context/session-id-context";
 import { Note } from "../@types/types";
+import { useNotes } from "../context/notes-context";
 
 export function Main() {
-  const { userId } = useSession();
-  const [notes, setNotes] = useState<Note[]>([]);
-  const fetchNotes = useCallback(async () => {
-    if (!userId) return; // Verifique se o `userId` está disponível
+  const { notes } = useNotes();
 
-    try {
-      const response = await getNotesByUserId(userId);
-      console.log("Notas recebidas:", response);
-
-      setNotes(response);
-    } catch (error) {
-      console.error("Erro ao buscar notas:", error);
-    }
-  }, [userId]);
-
-  useEffect(() => {
-    fetchNotes();
-  }, [fetchNotes]);
   return (
     <main className=" items-center flex flex-col justify-center">
       <InputCard />

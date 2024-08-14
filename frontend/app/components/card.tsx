@@ -1,12 +1,15 @@
 "use client"; // Adicione esta linha
 import { Close, Edit, Star, StarBorder } from "@mui/icons-material";
 import { Box } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { FileUploader } from "./subcomponents/file-uploader";
 import bucket from "@/app/assets/bucket.svg";
 import { ColorMenu } from "./subcomponents/color-menu";
 import { DeleteNoteDialog } from "./subcomponents/delete-note-dialog";
+import { updateNote } from "../api/note/update-note";
+import { useSession } from "../context/session-id-context";
+import { useNotes } from "../context/notes-context";
 
 interface CardProps {
   id: string;
@@ -32,9 +35,12 @@ const colors = [
 ];
 
 export function Card({ title, fav, file, color, id }: CardProps) {
+  const { userId } = useSession();
   const [buttonColorOpen, setButtonColorOpen] = useState(false);
   const [buttonEditOpen, setButtonEditOpen] = useState(false);
   const [buttonDeleteOpen, setButtonDeleteOpen] = useState(false);
+  const { notes, setNotes } = useNotes();
+  const [inputValue, setInputValue] = useState("");
 
   function onButtonEditClick() {
     setButtonEditOpen(!buttonEditOpen);
@@ -47,6 +53,43 @@ export function Card({ title, fav, file, color, id }: CardProps) {
   function onButtonDeleteClick() {
     setButtonDeleteOpen(!buttonDeleteOpen);
   }
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setInputValue(e.target.value);
+  }
+  async function handleStarClick() {
+    await updateNote({
+      id,
+      fav: !fav,
+      user_id: userId || "",
+    }).then(() => {
+      const newNotes = notes.map((note) =>
+        note.id === id ? { ...note, fav: !fav } : note
+      );
+      setNotes(newNotes);
+    });
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await updateNote({
+      id,
+      title: inputValue,
+      user_id: userId || "",
+    }).then(() => {
+      const newNotes = notes.map((note) =>
+        note.id === id ? { ...note, title: inputValue } : note
+      );
+      setNotes(newNotes);
+      setButtonEditOpen(false);
+    });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.currentTarget.form?.requestSubmit();
+    }
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -60,14 +103,19 @@ export function Card({ title, fav, file, color, id }: CardProps) {
             style={{ borderColor: color ? "#FFF" : "#E5E5E5" }}
           >
             {buttonEditOpen ? (
-              <input
-                className="bg-transparent text-xl font-bold leading-10 border-none p-0 outline-none w-56"
-                placeholder={title}
-              />
+              <form onSubmit={handleSubmit}>
+                <input
+                  className="bg-transparent text-xl font-bold leading-10 border-none p-0 outline-none w-56"
+                  placeholder={title}
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                />
+              </form>
             ) : (
               <h1 className="text-xl font-bold leading-10">{title}</h1>
             )}
-            <button>
+            <button onClick={handleStarClick}>
               <Box
                 position="relative"
                 display="inline-flex"
@@ -91,7 +139,12 @@ export function Card({ title, fav, file, color, id }: CardProps) {
           </div>
           <div className="flex flex-row items-center justify-center mt-2 px-4">
             {file ? (
-              <Image src={file} alt="file" width={250} height={250} />
+              <Image
+                src={`http://${file}`}
+                alt="file"
+                width={250}
+                height={250}
+              />
             ) : (
               <FileUploader />
             )}
@@ -120,7 +173,12 @@ export function Card({ title, fav, file, color, id }: CardProps) {
       {buttonColorOpen && (
         <div className="px-1 py-1 bg-white rounded-lg shadow-lg z-10 flex flex-wrap w-56 mt-[-10px]">
           {colors.map((color, index) => (
-            <ColorMenu colorIndex={index} color={color} key={index} />
+            <ColorMenu
+              colorIndex={index}
+              color={color}
+              key={index}
+              noteId={id}
+            />
           ))}
         </div>
       )}

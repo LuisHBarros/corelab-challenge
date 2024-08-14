@@ -29,9 +29,9 @@ export class FakeNoteRepository implements NoteRepository {
 	async findByUserIdAndTitle(
 		userId: string,
 		title: string
-	): Promise<Note | null> {
+	): Promise<Note[] | null> {
 		return this.notes.filter(
-			(note) => note.user_id === userId && note.title === title
-		)[0];
+			(note) => note.user_id === userId && note.title.includes(title)
+		);
 	}
 }

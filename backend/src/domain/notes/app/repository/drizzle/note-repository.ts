@@ -2,7 +2,7 @@ import { Note } from "@/domain/notes/entities/note";
 import { NoteRepository } from "../note-repository";
 import { db } from "@/db/drizzle";
 import { note } from "@/db/schemas";
-import { and, eq } from "drizzle-orm";
+import { and, eq, ilike } from "drizzle-orm";
 
 export class DrizzleNoteRepository implements NoteRepository {
 	// Private helper method to map database results to the `Note` entity
@@ -12,7 +12,6 @@ export class DrizzleNoteRepository implements NoteRepository {
 		return Note.create(
 			{
 				title: result.title,
-				description: result.description,
 				color: result.color,
 				fav: result.fav,
 				user_id: result.user_id,
@@ -68,7 +67,6 @@ export class DrizzleNoteRepository implements NoteRepository {
 				id: object.id,
 				created_at: new Date(), // Sets the creation date for the new note
 				title: object.title,
-				description: object.description,
 				color: object.color,
 				fav: object.fav,
 				user_id: object.user_id,
@@ -83,7 +81,6 @@ export class DrizzleNoteRepository implements NoteRepository {
 			.update(note)
 			.set({
 				title: object.title,
-				description: object.description,
 				color: object.color,
 				fav: object.fav,
 				file: object.file
@@ -95,16 +92,14 @@ export class DrizzleNoteRepository implements NoteRepository {
 	async findByUserIdAndTitle(
 		userId: string,
 		title: string
-	): Promise<Note | null> {
+	): Promise<Note[] | null> {
 		const response = await db
 			.select()
 			.from(note)
-			.where(and(eq(note.user_id, userId), eq(note.title, title)))
-			.limit(1)
+			.where(and(eq(note.user_id, userId), ilike(note.title, `%${title}%`)))
 			.execute();
 
-		// Returns the mapped note or `null` if no result is found
-		return response.length > 0 ? this.mapToNote(response[0]) : null;
+		return response.map(this.mapToNote);
 	}
 
 	// Method to remove a note by its ID

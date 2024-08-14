@@ -8,41 +8,47 @@ import { GetNoteByUser } from "../use-cases/get-note-by-user";
 import { UpdateNote } from "../use-cases/update-note";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-
 import {
 	CreateNoteSchema,
 	UpdateNoteSchema,
 	NoteIdSchema,
 	UserIdSchema,
-	fileUploadSchema
+	fileUploadSchema,
+	GetFileSchema,
+	GetNoteByTitleSchema
 } from "./validations-schemas";
 import path from "path";
 import fs from "fs";
 import { pipeline } from "stream/promises";
 import { Note } from "../../entities/note";
+import { GetNoteByTitle } from "../use-cases/get-note-by-title";
 
 export class NotesController {
-	// Initialize repositories and use cases
 	noteRepository = new DrizzleNoteRepository();
 	createNote = new CreateNote(this.noteRepository);
 	getNotes = new GetNote(this.noteRepository);
 	getNoteByUser = new GetNoteByUser(this.noteRepository);
 	updateNote = new UpdateNote(this.noteRepository);
 	deleteNote = new DeleteNote(this.noteRepository);
+	getNoteByTitle = new GetNoteByTitle(this.noteRepository);
 
 	// Create a new note
 	async create(
 		req: FastifyRequest<{ Body: z.infer<typeof CreateNoteSchema> }>,
 		reply: FastifyReply
 	) {
-		// Validate request body
 		const validationResult = CreateNoteSchema.safeParse(req.body);
 		if (!validationResult.success) {
 			return reply.status(400).send(validationResult.error.errors);
 		}
 
-		// Execute use case and respond accordingly
-		const response = await this.createNote.execute(req.body);
+		const response = await this.createNote.execute({
+			title: req.body.title,
+			fav: req.body.fav || false,
+			color: req.body.color || 0,
+			file: req.body.file || null,
+			user_id: req.body.user_id
+		});
 		if (response.isLeft()) {
 			return reply.status(400).send(response.value);
 		}
@@ -54,13 +60,11 @@ export class NotesController {
 		req: FastifyRequest<{ Params: z.infer<typeof NoteIdSchema> }>,
 		reply: FastifyReply
 	) {
-		// Validate request parameters
 		const validationResult = NoteIdSchema.safeParse(req.params);
 		if (!validationResult.success) {
 			return reply.status(400).send(validationResult.error.errors);
 		}
 
-		// Execute use case and respond accordingly
 		const response = await this.getNotes.execute({ id: req.params.id });
 		if (response.isLeft()) {
 			return reply.status(404).send(response.value);
@@ -73,13 +77,11 @@ export class NotesController {
 		req: FastifyRequest<{ Params: z.infer<typeof UserIdSchema> }>,
 		reply: FastifyReply
 	) {
-		// Validate request parameters
 		const validationResult = UserIdSchema.safeParse(req.params);
 		if (!validationResult.success) {
 			return reply.status(400).send(validationResult.error.errors);
 		}
 
-		// Execute use case and respond accordingly
 		const response = await this.getNoteByUser.execute({
 			user_id: req.params.user_id
 		});
@@ -94,18 +96,18 @@ export class NotesController {
 		req: FastifyRequest<{ Body: z.infer<typeof UpdateNoteSchema> }>,
 		reply: FastifyReply
 	) {
-		// Validate request body
 		const validationResult = UpdateNoteSchema.safeParse(req.body);
 		if (!validationResult.success) {
 			return reply.status(400).send(validationResult.error.errors);
 		}
 
-		// Execute use case and respond accordingly
 		const response = await this.updateNote.execute({
 			id: req.body.id,
 			fav: req.body.fav,
 			color: req.body.color,
-			file: req.body.file || undefined
+			file: req.body.file || undefined,
+			title: req.body.title,
+			user_id: req.body.user_id
 		});
 		if (response.isLeft()) {
 			return reply.status(404).send(response.value);
@@ -118,13 +120,11 @@ export class NotesController {
 		req: FastifyRequest<{ Params: z.infer<typeof NoteIdSchema> }>,
 		reply: FastifyReply
 	) {
-		// Validate request parameters
 		const validationResult = NoteIdSchema.safeParse(req.params);
 		if (!validationResult.success) {
 			return reply.status(400).send(validationResult.error.errors);
 		}
 
-		// Execute use case and respond accordingly
 		const response = await this.deleteNote.execute({ id: req.params.id });
 		if (response.isLeft()) {
 			return reply.status(404).send(response.value);
@@ -159,34 +159,26 @@ export class NotesController {
 
 		return reply
 			.status(200)
-			.send({ message: "File uploaded successfully " + filePath });
+			.send({ filename: `localhost:3000/files/${filename}` });
 	}
 
 	// Retrieve a file
 	async getFile(
-		req: FastifyRequest<{ Params: { filename: string } }>,
+		req: FastifyRequest<{ Params: z.infer<typeof GetFileSchema> }>,
 		reply: FastifyReply
 	) {
-		const filename = req.params.filename;
-
-		// Log filename for debugging
-		console.log("Received filename:", filename);
-
-		if (!filename) {
-			return reply.status(400).send({ message: "Filename is required" });
+		const validationResult = GetFileSchema.safeParse(req.params);
+		if (!validationResult.success) {
+			return reply.status(400).send(validationResult.error.errors);
 		}
 
-		// Determine file path and validate existence
-		const filePath = path.join(
-			"/home/luis/documents/corelab-challenge/backend/uploads",
-			filename
-		);
+		const filename = req.params.filename;
+		const filePath = path.join("../../../../../uploads", filename);
 
 		if (!fs.existsSync(filePath)) {
 			return reply.status(404).send({ message: "File not found" });
 		}
 
-		// Set appropriate content type based on file extension
 		const ext = path.extname(filename).toLowerCase();
 		let contentType = "application/octet-stream";
 		if (ext === ".jpg" || ext === ".jpeg") contentType = "image/jpeg";
@@ -196,5 +188,26 @@ export class NotesController {
 		reply.header("Content-Type", contentType);
 		reply.status(200);
 		reply.send(fs.createReadStream(filePath));
+	}
+
+	// Get a note by title and user ID
+	async getByTitle(
+		req: FastifyRequest<{ Querystring: z.infer<typeof GetNoteByTitleSchema> }>,
+		reply: FastifyReply
+	) {
+		const validationResult = GetNoteByTitleSchema.safeParse(req.query);
+		if (!validationResult.success) {
+			return reply.status(400).send(validationResult.error.errors);
+		}
+
+		const response = await this.getNoteByTitle.execute({
+			title: req.query.title,
+			userId: req.query.user_id
+		});
+		if (response.isLeft()) {
+			return reply.status(404).send({ message: "Note not found" });
+		}
+
+		return reply.status(200).send(response.value);
 	}
 }

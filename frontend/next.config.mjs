@@ -1,8 +1,13 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+// next.config.mjs
+export default {
   images: {
-    domains: ["t3.ftcdn.net"],
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3000",
+        pathname: "/files/**",
+      },
+    ],
   },
 };
-
-export default nextConfig;

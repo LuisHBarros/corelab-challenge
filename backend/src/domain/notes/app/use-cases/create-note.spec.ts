@@ -14,7 +14,6 @@ describe("Test createNote use case", () => {
 	it("should return a note", async () => {
 		const response = await sut.execute({
 			title: "title",
-			description: "description",
 			fav: false,
 			color: 1,
 			file: "file",
@@ -29,7 +28,6 @@ describe("Test createNote use case", () => {
 		noteRepository.save(note);
 		const response = await sut.execute({
 			title: note.title,
-			description: "description",
 			fav: false,
 			color: 1,
 			file: "file",

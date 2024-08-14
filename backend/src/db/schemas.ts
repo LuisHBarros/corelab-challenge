@@ -18,7 +18,6 @@ export const user = pgTable("user", {
 export const note = pgTable("note", {
 	id: text("id").notNull().primaryKey(),
 	title: text("title").notNull(),
-	description: text("description").notNull(),
 	fav: boolean("fav").notNull(),
 	color: integer("color").notNull(),
 	file: text("file"),

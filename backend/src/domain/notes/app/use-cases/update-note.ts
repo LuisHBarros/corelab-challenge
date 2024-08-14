@@ -8,16 +8,28 @@ interface UpdateNoteDTO {
 	color?: number;
 	fav?: boolean;
 	id: string;
+	title?: string;
 	file?: string;
+	user_id: string;
 }
 
 type UpdateNoteResponse = Promise<Either<UseCaseError, Note>>;
 
 export class UpdateNote {
 	constructor(private noteRepository: NoteRepository) {}
-	async execute({ id, fav, color, file }: UpdateNoteDTO): UpdateNoteResponse {
+	async execute({
+		id,
+		title,
+		fav,
+		color,
+		file,
+		user_id
+	}: UpdateNoteDTO): UpdateNoteResponse {
 		const note = await this.noteRepository.findById(id);
 		if (!note) {
+			return left(new ResourceNotFoundError("Note not found"));
+		}
+		if (note.user_id !== user_id) {
 			return left(new ResourceNotFoundError("Note not found"));
 		}
 
@@ -29,6 +41,22 @@ export class UpdateNote {
 		}
 		if (file !== undefined) {
 			note.file = file;
+		}
+		if (title !== undefined) {
+			const noteByTitle = await this.noteRepository.findByUserIdAndTitle(
+				user_id,
+				title
+			);
+			let equal = false;
+			noteByTitle?.forEach((note) => {
+				if (note.title === title) {
+					equal = true;
+				}
+			});
+			if (equal) {
+				return left(new ResourceNotFoundError("Note already exists"));
+			}
+			note.title = title;
 		}
 		await this.noteRepository.update(note);
 

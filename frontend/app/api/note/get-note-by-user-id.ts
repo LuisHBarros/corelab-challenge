@@ -1,24 +1,13 @@
-import { ApiResponse, Note } from "@/app/@types/types";
+import { Note, NotesResponseAPI } from "@/app/@types/types";
 import api from "../axios";
-
-interface GetNotesByUserIdResponse {
-  _id: string;
-  props: {
-    color: number;
-    description: string;
-    fav: boolean;
-    file: string;
-    title: string;
-    user_id: string;
-  };
-}
 
 export async function getNotesByUserId(userId: string): Promise<Note[]> {
   try {
-    const response = await api.get<ApiResponse<GetNotesByUserIdResponse[]>>(
-      `/notes/user/${userId}`
-    );
-    return response.data.map((note) => ({
+    const response = await api.get<NotesResponseAPI[]>(`/notes/user/${userId}`);
+    if (response.status !== 200) {
+      return [];
+    }
+    return response.data.map((note: NotesResponseAPI) => ({
       id: note._id,
       color: note.props.color,
       description: note.props.description,

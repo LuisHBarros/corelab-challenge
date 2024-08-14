@@ -1,4 +1,5 @@
 import { deleteNote } from "@/app/api/note/delete.note";
+import { useNotes } from "@/app/context/notes-context";
 import { Dialog, DialogTitle, DialogActions, Button } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
@@ -15,11 +16,16 @@ export function DeleteNoteDialog({
   id,
 }: DeleteNoteDialogProps) {
   const [loading, setLoading] = useState(false);
+  const { setNotes, notes } = useNotes();
 
   async function handleDeleteNote() {
     try {
       setLoading(true);
-      await deleteNote(id);
+      await deleteNote(id).then(() => {
+        const updatedNotes = notes.filter((note) => note.id !== id);
+        setNotes(updatedNotes);
+      });
+
       // Opcional: Fechar o diálogo ou atualizar o estado do pai
       onButtonDeleteClick();
     } catch (error) {

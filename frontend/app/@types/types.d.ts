@@ -13,10 +13,17 @@ export interface User {
   user_id: string;
 }
 
-export interface ApiResponse<T> {
-  data: T;
-}
-
 export interface FileUploadResponse {
-  message: string;
+  filename: string;
+}
+export interface NotesResponseAPI {
+  _id: string;
+  props: {
+    color: number;
+    description: string;
+    fav: boolean;
+    file: string;
+    title: string;
+    user_id: string;
+  };
 }

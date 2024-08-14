@@ -1,26 +1,35 @@
 "use client";
-import { useState, FormEvent, useContext } from "react";
+import { useState } from "react";
 import { useSession } from "../context/session-id-context";
+import { useNotes } from "../context/notes-context";
+import { getNoteByTitle } from "../api/note/get-note-by-title";
 
 export function SearchBar() {
-  const { sessionId } = useSession();
+  const { userId } = useSession();
+  const { notes, setNotes: updateNotes } = useNotes();
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    // Faça a requisição para o backend aqui
+  // Função para lidar com mudanças no input
+  const handleInputChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newSearchTerm = event.target.value;
+    setSearchTerm(newSearchTerm);
+    const response = await getNoteByTitle({
+      user_id: userId as string,
+      title: newSearchTerm,
+    });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="h-7 lg:w-[32rem]">
+    <div className="h-7 lg:w-[32rem]">
       <input
         type="text"
         placeholder="Pesquisar notas"
         className="w-56 h-full border rounded-sm py-4 text-sm px-2 focus:w-72 animate-pulse"
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={handleInputChange}
       />
-    </form>
+    </div>
   );
 }

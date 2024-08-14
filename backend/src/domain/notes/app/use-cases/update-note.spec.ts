@@ -14,14 +14,21 @@ describe("Test update note use case", () => {
 	it("should update a note if given note id exists", async () => {
 		const note = NoteFactory();
 		noteRepository.save(note);
-		const response = await sut.execute({ id: note.id, fav: true });
+		const response = await sut.execute({
+			id: note.id,
+			fav: true,
+			user_id: note.user_id
+		});
 		expect(response.isRight()).toBe(true);
 		expect(response.value).toBe(note);
 		const updatedNote = await noteRepository.findById(note.id);
 		expect(updatedNote?.fav).toBe(true);
 	});
 	it("should return a ResourceNotFoundError if given note id does not exist", async () => {
-		const response = await sut.execute({ id: "invalid_note_id" });
+		const response = await sut.execute({
+			id: "invalid_note_id",
+			user_id: "user_id"
+		});
 		expect(response.isLeft()).toBe(true);
 		expect(response.value).toBeInstanceOf(ResourceNotFoundError);
 	});

@@ -3,7 +3,6 @@ import { Color } from "./color";
 
 export interface NoteProps {
 	title: string;
-	description: string;
 	fav: boolean;
 	color: Color;
 	file: string | null;
@@ -13,9 +12,6 @@ export interface NoteProps {
 export class Note extends Entity<NoteProps> {
 	get title() {
 		return this.props.title;
-	}
-	get description() {
-		return this.props.description;
 	}
 	get fav() {
 		return this.props.fav;
@@ -28,6 +24,9 @@ export class Note extends Entity<NoteProps> {
 	}
 	get file() {
 		return this.props.file || "";
+	}
+	set title(title: string) {
+		this.props.title = title;
 	}
 	set fav(fav: boolean) {
 		this.props.fav = fav;

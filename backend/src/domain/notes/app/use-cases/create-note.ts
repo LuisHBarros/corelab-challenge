@@ -7,7 +7,6 @@ import { AlreadyExistsError } from "@/core/errors/errors/already_exists";
 
 interface CreateNoteDTO {
 	title: string;
-	description: string;
 	fav: boolean;
 	color: Color;
 	file: string | null;
@@ -20,16 +19,33 @@ export class CreateNote {
 	constructor(private noteRepository: NoteRepository) {}
 	async execute({
 		title,
-		description,
 		fav,
 		color,
 		file,
 		user_id
 	}: CreateNoteDTO): CreateNoteResponse {
-		if (await this.noteRepository.findByUserIdAndTitle(user_id, title)) {
-			return left(new AlreadyExistsError("Note already exists"));
+		const noteExists = await this.noteRepository.findByUserIdAndTitle(
+			user_id,
+			title
+		);
+		if (noteExists) {
+			let exists = false;
+			noteExists.map((note) => {
+				if (note.title === title) {
+					exists = true;
+				}
+			});
+			if (exists) {
+				return left(new AlreadyExistsError("Note already exists"));
+			}
 		}
-		const note = Note.create({ title, description, fav, color, file, user_id });
+		const note = Note.create({
+			title,
+			fav,
+			color,
+			file,
+			user_id
+		});
 		await this.noteRepository.save(note);
 		return right(note);
 	}
