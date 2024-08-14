@@ -29,8 +29,8 @@ export function InputCard() {
         title: inputValue.title,
         user_id: userId || "",
       });
-      setNotes([...notes, response]); // Adiciona a nova nota à lista de notas
-      // Limpar o valor do input após o envio, se desejado
+      setNotes([...notes, response]);
+      // Reset the input value
       setInputValue({ title: "", fav: false });
     } catch (error) {
       console.error("Erro ao enviar a nota:", error);

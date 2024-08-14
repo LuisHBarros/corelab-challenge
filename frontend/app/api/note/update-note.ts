@@ -11,11 +11,11 @@ interface UpdateNoteResponse {
 }
 
 export async function updateNote(note: UpdateNoteResponse): Promise<Note> {
-  try {
-    const response = await api.put<Note>(`/notes/${note.id}`, note);
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao atualizar nota:", error);
-    throw error;
-  }
+  const response = await api
+    .put<Note>(`/notes/${note.id}`, note)
+    .catch((error) => {
+      console.error("Erro ao atualizar nota:", error);
+      throw error;
+    });
+  return response.data;
 }

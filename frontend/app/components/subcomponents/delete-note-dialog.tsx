@@ -26,7 +26,6 @@ export function DeleteNoteDialog({
         setNotes(updatedNotes);
       });
 
-      // Opcional: Fechar o diálogo ou atualizar o estado do pai
       onButtonDeleteClick();
     } catch (error) {
       console.error("Erro ao excluir a nota:", error);
@@ -42,10 +41,10 @@ export function DeleteNoteDialog({
       aria-describedby="alert-dialog-description"
       sx={{
         "& .MuiDialog-paper": {
-          backgroundColor: "#f0f4c3", // Cor de fundo do diálogo
-          color: "#333", // Cor do texto
-          borderRadius: "10px", // Borda arredondada
-          padding: "20px", // Espaçamento interno
+          backgroundColor: "#f0f4c3",
+          color: "#333",
+          borderRadius: "10px",
+          padding: "20px",
         },
       }}
     >
@@ -60,10 +59,10 @@ export function DeleteNoteDialog({
         <Button
           onClick={onButtonDeleteClick}
           sx={{
-            backgroundColor: "#bdbdbd", // Cor de fundo do botão "Cancelar"
-            color: "#fff", // Cor do texto do botão
+            backgroundColor: "#bdbdbd",
+            color: "#fff",
             "&:hover": {
-              backgroundColor: "#9e9e9e", // Cor de fundo ao passar o mouse
+              backgroundColor: "#9e9e9e",
             },
           }}
         >
@@ -72,14 +71,14 @@ export function DeleteNoteDialog({
         <Button
           onClick={handleDeleteNote}
           sx={{
-            backgroundColor: "#f44336", // Cor de fundo do botão "Excluir"
-            color: "#fff", // Cor do texto do botão
-            marginLeft: "10px", // Espaçamento entre os botões
+            backgroundColor: "#f44336",
+            color: "#fff",
+            marginLeft: "10px",
             "&:hover": {
-              backgroundColor: "#d32f2f", // Cor de fundo ao passar o mouse
+              backgroundColor: "#d32f2f",
             },
           }}
-          disabled={loading} // Desabilitar o botão enquanto a requisição está em andamento
+          disabled={loading}
         >
           {loading ? "Excluindo..." : "Excluir"}
         </Button>

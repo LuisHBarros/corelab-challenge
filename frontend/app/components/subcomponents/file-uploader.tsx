@@ -36,7 +36,6 @@ export function FileUploader({ noteId }: { noteId: string }) {
       const formData = new FormData();
       formData.append("file", file);
 
-      // Faça o upload do arquivo
       const uploadResponse = await uploadFile(formData);
       await updateNote({
         id: noteId,
@@ -49,7 +48,6 @@ export function FileUploader({ noteId }: { noteId: string }) {
           setNotes([...notes]);
         }
       });
-      // Agora você pode usar o updatedNote conforme necessário, como atualizar a nota no servidor
       setUploadStatus("Upload successful!");
     } catch (error) {
       console.error("Erro ao fazer upload do arquivo:", error);

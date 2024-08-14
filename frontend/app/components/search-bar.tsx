@@ -9,10 +9,7 @@ export function SearchBar() {
   const { notes, setNotes: updateNotes } = useNotes();
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  // Função para lidar com mudanças no input
-  const handleInputChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  async function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newSearchTerm = event.target.value;
     setSearchTerm(newSearchTerm);
     const response = await getNoteByTitle({
@@ -22,7 +19,7 @@ export function SearchBar() {
     if (response) {
       updateNotes(response);
     }
-  };
+  }
 
   return (
     <div className="h-7 lg:w-[32rem]">

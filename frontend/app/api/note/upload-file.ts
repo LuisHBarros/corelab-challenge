@@ -4,19 +4,15 @@ import api from "../axios";
 export async function uploadFile(
   formData: FormData
 ): Promise<FileUploadResponse> {
-  try {
-    const response = await api.post<FileUploadResponse>(
-      "/notes/file",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao enviar arquivo:", error);
-    throw error;
-  }
+  const response = await api
+    .post<FileUploadResponse>("/notes/file", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .catch((error) => {
+      console.error("Erro ao fazer upload do arquivo:", error);
+      throw error;
+    });
+  return response.data;
 }

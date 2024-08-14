@@ -1,9 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
 import { Card } from "./card";
 import { InputCard } from "./input-card";
-import { getNotesByUserId } from "../api/note/get-note-by-user-id";
-import { useSession } from "../context/session-id-context";
-import { Note } from "../@types/types";
 import { useNotes } from "../context/notes-context";
 
 export function Main() {

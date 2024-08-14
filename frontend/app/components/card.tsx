@@ -1,4 +1,4 @@
-"use client"; // Adicione esta linha
+"use client";
 import { Close, Edit, Star, StarBorder } from "@mui/icons-material";
 import { Box } from "@mui/material";
 import { useState } from "react";
