@@ -19,6 +19,9 @@ export function SearchBar() {
       user_id: userId as string,
       title: newSearchTerm,
     });
+    if (response) {
+      updateNotes(response);
+    }
   };
 
   return (

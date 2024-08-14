@@ -146,7 +146,7 @@ export function Card({ title, fav, file, color, id }: CardProps) {
                 height={250}
               />
             ) : (
-              <FileUploader />
+              <FileUploader noteId={id} />
             )}
           </div>
         </section>

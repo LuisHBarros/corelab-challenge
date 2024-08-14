@@ -4,7 +4,7 @@ import { useNotes } from "@/app/context/notes-context";
 import { updateNote } from "@/app/api/note/update-note";
 import { useSession } from "@/app/context/session-id-context";
 
-export function FileUploader() {
+export function FileUploader({ noteId }: { noteId: string }) {
   const { notes, setNotes } = useNotes();
   const { userId } = useSession();
   const [file, setFile] = useState<File | null>(null);
@@ -39,7 +39,7 @@ export function FileUploader() {
       // Faça o upload do arquivo
       const uploadResponse = await uploadFile(formData);
       await updateNote({
-        id: notes[0].id,
+        id: noteId,
         file: uploadResponse.filename,
         user_id: userId || "",
       }).then(() => {
