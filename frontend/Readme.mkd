@@ -18,9 +18,8 @@
 
 ## Prints do funcionamento
 
-![alt text](/readme-files/image.png)
-![alt text](/readme-files/image-1.png)
-![alt text](/readme-files/image-2.png)
-![alt text](/readme-files/image-3.png)
-![alt text](/readme-files/image-4.png)
-![alt text](image.png)
+![Main aplicacao](/readme-files/image.png)
+![Exclusion Dialog](/readme-files/image-1.png)
+![Mobile view](/readme-files/image-3.png)
+![Paleta de cores](/readme-files/image-4.png)
+![Image Example](/readme-files/image6.png)
